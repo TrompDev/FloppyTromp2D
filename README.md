@@ -1,11 +1,11 @@
 
 # 🕊️ FloppyTromp: The Political Flight 🏛️💥
 
-Welcome to **FlopyTromp**, the absurdly addictive game where politics meets chaos, and you're just one flap away from getting *rekt*. Can you dodge the flying scandals, survive the partisan bullets, and unlock a roster of your favorite (or least favorite) political figures? 🤔
+Welcome to **FloppyTromp**, the absurdly addictive game where politics meets chaos, and you're just one flap away from getting *rekt*. Can you dodge the flying scandals, survive the partisan bullets, and unlock a roster of your favorite (or least favorite) political figures? 🤔
 
 ## What is this?
 
-FlopyTromp is a satirical, *Flappy Bird*-style game for degens who love a good political meme. Whether you're dodging scandals or literal bullets, your goal is simple: **Don’t crash.** But the more you play, the deeper into the absurd rabbit hole you go...
+FloppyTromp is a satirical, *Flappy Bird*-style game for degens who love a good political meme. Whether you're dodging scandals or literal bullets, your goal is simple: **Don’t crash.** But the more you play, the deeper into the absurd rabbit hole you go...
 
 ## How to play?
 1. **Flap** 🦅: Tap, tap, tap to avoid obstacles that may or may not be political in nature. (No promises.)
