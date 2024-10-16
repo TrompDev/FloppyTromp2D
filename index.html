@@ -5,88 +5,33 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity Web Player | Flopy Tromp</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <style>
-      body, html {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: #000; /* Set background to black */
-        color: white;
-        overflow: hidden; /* Optional: Remove scrollbar in full screen */
-      }
-      #unity-container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      #unity-canvas {
-        width: 100%;
-        height: 100%;
-      }
-      #unity-fullscreen-button {
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
-        width: 50px;
-        height: 50px;
-        background-color: red; /* Fullscreen button color */
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      #unity-fullscreen-button:hover {
-        background-color: darkred; /* Darker red on hover */
-      }
-      #unity-fullscreen-button::before {
-        content: '⤢'; /* Unicode fullscreen icon */
-        color: white;
-        font-size: 24px;
-      }
-      #unity-loading-bar {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 200px;
-        height: 20px;
-        margin: -10px 0 0 -100px; /* Center the bar */
-        background-color: rgba(255, 255, 255, 0.2);
-      }
-      #unity-progress-bar-full {
-        width: 0%;
-        height: 100%;
-        background-color: red;
-        transition: width 0.5s ease;
-      }
-      #unity-warning {
-        position: absolute;
-        top: 5px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 10px;
-        background-color: yellow;
-        color: black;
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width="1280" height="720" tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width=1280 height=720 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
-      <div id="unity-warning"></div>
-      <div id="unity-fullscreen-button"></div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">Flopy Tromp</div>
+      </div>
     </div>
     <script>
       var canvas = document.querySelector("#unity-canvas");
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
@@ -96,8 +41,8 @@
         div.innerHTML = msg;
         warningBanner.appendChild(div);
         if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else if (type == 'warning') {
-          div.style = 'background: yellow; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
           setTimeout(function() {
             warningBanner.removeChild(div);
             updateBannerVisibility();
@@ -107,11 +52,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/FlopyTrompgameLIVE.loader.js";
+      var loaderUrl = buildUrl + "/FlopyTrompGameLIVE.loader.js";
       var config = {
-        dataUrl: buildUrl + "/FlopyTrompgameLIVE.data",
-        frameworkUrl: buildUrl + "/FlopyTrompgameLIVE.framework.js",
-        codeUrl: buildUrl + "/FlopyTrompgameLIVE.wasm",
+        arguments: [],
+        dataUrl: buildUrl + "/FlopyTrompGameLIVE.data",
+        frameworkUrl: buildUrl + "/FlopyTrompGameLIVE.framework.js",
+        codeUrl: buildUrl + "/FlopyTrompGameLIVE.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "TeamMurica",
         productName: "Flopy Tromp",
@@ -119,16 +65,32 @@
         showBanner: unityShowBanner,
       };
 
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+
+
       } else {
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        canvas.style.width = "1280px";
+        canvas.style.height = "720px";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
@@ -138,19 +100,19 @@
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          document.querySelector("#unity-loading-bar").style.display = "none";
-          document.querySelector("#unity-fullscreen-button").onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-        }).catch((message) => {
-          alert(message);
-        });
-      };
+              }).then((unityInstance) => {
+                document.querySelector("#unity-loading-bar").style.display = "none";
+                document.querySelector("#unity-fullscreen-button").onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+
+              }).catch((message) => {
+                alert(message);
+              });
+            };
 
       document.body.appendChild(script);
+
     </script>
   </body>
 </html>
-
-
