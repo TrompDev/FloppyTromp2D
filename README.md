@@ -1,5 +1,5 @@
 
-# 🕊️ FlopyTromp: The Political Flight 🏛️💥
+# 🕊️ FloppyTromp: The Political Flight 🏛️💥
 
 Welcome to **FlopyTromp**, the absurdly addictive game where politics meets chaos, and you're just one flap away from getting *rekt*. Can you dodge the flying scandals, survive the partisan bullets, and unlock a roster of your favorite (or least favorite) political figures? 🤔
 
