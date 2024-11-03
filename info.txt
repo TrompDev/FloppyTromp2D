@@ -1,0 +1,7 @@
+Best practices for clipboard functionality in WebGL:
+
+Users have to:
+
+Allow clipboard permissions when prompted
+Refresh the page once after allowing permissions
+Make sure they're using a supported browser (Chrome/Firefox/Edge)
