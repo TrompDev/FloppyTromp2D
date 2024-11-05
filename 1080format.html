@@ -5,8 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Unity Web Player | Flopy Tromp</title>
-    <!-- Add security headers -->
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
+    <!-- Security headers -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; connect-src https://backendtromp.com ws://backendtromp.com wss://backendtromp.com 'self';">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    
     <style>
       html, body {
         width: 100%;
@@ -128,9 +132,11 @@
       <button id="fullscreen-button" title="Toggle Fullscreen"></button>
     </div>
     <script>
-       var unityInstance = null;
+      var unityInstance = null;
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/FloppyTrompgameLIVE.loader.js";
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
       var config = {
         dataUrl: buildUrl + "/FloppyTrompgameLIVE.data",
         frameworkUrl: buildUrl + "/FloppyTrompgameLIVE.framework.js",
@@ -140,19 +146,18 @@
         productName: "Flopy Tromp",
         productVersion: "1.0",
         devicePixelRatio: isMobile ? 2 : 1,
-        // Add HTTPS settings
         https: true,
         webglContextAttributes: {
           preserveDrawingBuffer: true
         }
       };
+
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var mobileWarning = document.querySelector("#unity-mobile-warning");
       var fullscreenButton = document.querySelector("#fullscreen-button");
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
       function resizeGame() {
         var windowWidth = window.innerWidth;
@@ -225,32 +230,27 @@
         fullscreenButton.addEventListener('click', toggleFullscreen);
       }
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/FloppyTrompgameLIVE.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/FloppyTrompgameLIVE.data",
-        frameworkUrl: buildUrl + "/FloppyTrompgameLIVE.framework.js",
-        codeUrl: buildUrl + "/FloppyTrompgameLIVE.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "TeamMurica",
-        productName: "Floppy Tromp",
-        productVersion: "1.0",
-        devicePixelRatio: isMobile ? 2 : 1,
-      };
-
       loadingBar.style.display = "block";
 
       var script = document.createElement("script");
       script.src = loaderUrl;
+      
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
+        }).then((instance) => {
           loadingBar.style.display = "none";
-          window.unityInstance = unityInstance;
+          window.unityInstance = instance;
+          console.log("Unity WebGL initialized successfully");
         }).catch((message) => {
-          alert(message);
+          console.error("Unity WebGL initialization error:", message);
+          alert("Failed to initialize game: " + message);
         });
+      };
+
+      script.onerror = (error) => {
+        console.error("Failed to load Unity loader:", error);
+        alert("Failed to load game resources. Please check your connection and try again.");
       };
 
       document.body.appendChild(script);
@@ -261,6 +261,14 @@
         setTimeout(resizeGame, 100);
         if (window.unityInstance) {
           window.unityInstance.SendMessage('GameManager', 'OnOrientationChanged');
+        }
+      });
+
+      // CORS error handling
+      window.addEventListener('unhandledrejection', function(event) {
+        console.error('Unhandled promise rejection:', event.reason);
+        if (event.reason.toString().includes('CORS')) {
+          console.error('CORS error detected. Please check server configuration.');
         }
       });
 
