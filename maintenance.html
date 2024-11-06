@@ -3,175 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeamMurica - Under Maintenance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+    <title>TeamMurica - Under Maintenance (Battle Edition)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            min-height: 100vh;
-            background-color: #001F3F;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background-color: #000;
             color: white;
-            font-family: 'Bungee', cursive;
+            font-family: 'Press Start 2P', cursive;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        .patriotic-ticker {
-            background: rgb(184, 32, 37);
-            padding: 15px 0;
-            position: relative;
             overflow: hidden;
-            border-top: 2px solid rgba(255, 255, 255, 0.2);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            background: 
+                linear-gradient(transparent 50%, rgba(0,0,0,0.8) 50%),
+                linear-gradient(90deg, #B82025, #001F3F);
+            background-size: 4px 4px, 100% 100%;
+            position: relative;
         }
 
-        .ticker-content {
-            display: inline-flex;
-            animation: ticker 20s linear infinite;
-            white-space: nowrap;
-        }
-
-        .ticker-item {
-            padding: 0 30px;
-            font-size: 1.5em;
-            color: white;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
-                         2px 2px 0px #800000;
-            animation: glow 2s infinite alternate;
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+            animation: scanline 10s linear infinite;
         }
 
         .main-content {
-            flex: 1;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-around;
+            padding: 2vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .battle-title {
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 
+                0 0 10px rgba(255,255,255,0.8),
+                0 0 20px #B82025,
+                0 0 30px #B82025;
+            animation: glow 2s infinite alternate;
+        }
+
+        .versus-screen {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .character {
+            width: 40%;
             text-align: center;
-            padding: 2rem;
+        }
+
+        .character-portrait {
+            width: 200px;
+            height: 200px;
+            border: 4px solid #B82025;
+            background: rgba(0,0,0,0.5);
+            margin: 0 auto;
+            animation: portrait-flicker 0.5s infinite alternate;
+        }
+
+        .character.left .character-portrait {
+            transform: scaleX(-1);
+            border-color: #B82025;
+        }
+
+        .character.right .character-portrait {
+            border-color: #001F3F;
+        }
+
+        .versus-symbol {
+            font-size: 4em;
+            color: #fff;
+            text-shadow: 3px 3px 0px #B82025;
+            animation: versus-pulse 1.5s infinite;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 20px;
+            background: #000;
+            border: 2px solid #fff;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: #B82025;
+            width: 0;
+            animation: health-fill 2s forwards;
+        }
+
+        .character-name {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #fff;
+            text-shadow: 2px 2px #B82025;
+        }
+
+        .stats {
+            font-size: 0.8em;
+            margin-top: 10px;
+            color: #B82025;
+            text-align: left;
+        }
+
+        .maintenance-message {
+            background: rgba(0,0,0,0.8);
+            border: 4px solid #B82025;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
             position: relative;
         }
 
-        .maintenance-title {
-            font-size: 3em;
-            margin-bottom: 1rem;
-            animation: titleBounce 2s infinite;
-            text-shadow: 3px 3px 0px #B82025;
+        .message-text {
+            margin: 10px 0;
+            color: #fff;
+            line-height: 1.5;
+            font-size: 0.9em;
         }
 
-        .maintenance-text {
-            font-size: 1.5em;
-            margin: 1rem 0;
-            max-width: 800px;
-            animation: textFade 3s infinite;
+        .timer {
+            color: #B82025;
+            font-size: 1.2em;
+            margin-top: 15px;
+            animation: blink 1s infinite;
         }
 
-        .tromp-image {
-            width: 200px;
-            height: 200px;
-            margin: 2rem 0;
-            animation: spin 10s linear infinite;
-        }
-
-        .stars-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .star {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: starFloat 3s infinite;
-            opacity: 0.5;
-        }
-
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
         }
 
         @keyframes glow {
-            0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 2px 2px 0px #800000; }
-            100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 2px 2px 0px #800000, 0 0 30px rgba(184, 32, 37, 0.6); }
+            from { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #B82025; }
+            to { text-shadow: 0 0 20px #fff, 0 0 30px #B82025, 0 0 40px #B82025; }
         }
 
-        @keyframes titleBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes portrait-flicker {
+            0%, 92% { opacity: 1; }
+            95% { opacity: 0.8; }
+            100% { opacity: 1; }
         }
 
-        @keyframes textFade {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        @keyframes versus-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes health-fill {
+            from { width: 0; }
+            to { width: 100%; }
         }
 
-        @keyframes starFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
         }
 
         @media (max-width: 768px) {
-            .maintenance-title {
-                font-size: 2em;
+            .battle-title { font-size: 1.5em; }
+            .character-portrait {
+                width: 120px;
+                height: 120px;
             }
-            .maintenance-text {
-                font-size: 1.2em;
-            }
-            .tromp-image {
-                width: 150px;
-                height: 150px;
-            }
+            .versus-symbol { font-size: 2em; }
+            .message-text { font-size: 0.7em; }
         }
     </style>
 </head>
 <body>
-    <div class="patriotic-ticker">
-        <div class="ticker-content">
-            <span class="ticker-item">🔧 MAKING AMERICA GREAT AGAIN 🔧</span>
-            <span class="ticker-item">🚧 TEMPORARY MAINTENANCE 🚧</span>
-            <span class="ticker-item">💪 COMING BACK STRONGER 💪</span>
-            <span class="ticker-item">🔄 PLEASE STAND BY 🔄</span>
-        </div>
-    </div>
-
     <div class="main-content">
-        <div class="stars-container">
-            <div class="star" style="top: 10%; left: 20%"></div>
-            <div class="star" style="top: 30%; left: 80%"></div>
-            <div class="star" style="top: 70%; left: 40%"></div>
-            <div class="star" style="top: 50%; left: 60%"></div>
-            <div class="star" style="top: 80%; left: 10%"></div>
+        <h1 class="battle-title">MAINTENANCE BATTLE</h1>
+
+        <div class="versus-screen">
+            <div class="character left">
+                <div class="character-portrait">
+                    <img src="tromp.png" alt="Trump" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="health-bar">
+                    <div class="health-fill"></div>
+                </div>
+                <div class="character-name">TRUMP</div>
+                <div class="stats">
+                    POWER: ████████░░<br>
+                    SPEED: ███████░░░<br>
+                    MEMES: ██████████
+                </div>
+            </div>
+
+            <div class="versus-symbol">VS</div>
+
+            <div class="character right">
+                <div class="character-portrait">
+                    <img src="hurris.png" alt="Kamala" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="health-bar">
+                    <div class="health-fill"></div>
+                </div>
+                <div class="character-name">KAMALA</div>
+                <div class="stats">
+                    POWER: ██████░░░░<br>
+                    SPEED: ████░░░░░░<br>
+                    MEMES: ███░░░░░░░
+                </div>
+            </div>
         </div>
 
-        <h1 class="maintenance-title">🚧 BIGLY MAINTENANCE TIME 🚧</h1>
-        
-        <img src="tromp-garbage.png" alt="Tromp" class="tromp-image"/>
-        
-        <p class="maintenance-text">
-            Folks, we're making our game TREMENDOUS again! 
-            The best developers (believe me, they're incredible) 
-            are working hard to make everything YUUUGE and beautiful!
-        </p>
-        
-        <p class="maintenance-text">
-            We'll be back faster than you can say "COVFEFE"! 
-            In the meantime, grab a DIET COKE and relax!
-        </p>
-        
-        <p class="maintenance-text" style="font-size: 1.2em; color: #B82025;">
-            Expected downtime: Maybe few hours (we have the best servers, everyone says so!)
-        </p>
+        <div class="maintenance-message">
+            <p class="message-text">ROUND 1: SERVER MAINTENANCE</p>
+            <p class="message-text">FIXING BUGS AND DEPLOYING UPDATES</p>
+            <p class="message-text">MAKING AMERICA GREAT AGAIN...</p>
+            <p class="timer">CONTINUE IN: A FEW HOURS</p>
+        </div>
     </div>
 </body>
 </html>
